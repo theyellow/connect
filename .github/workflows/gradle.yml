@@ -47,10 +47,3 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 8
-      - name: Publish with Gradle
-        run: ./gradlew -x test publish
-        env:
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.signingKey }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.signingPassword }}
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.sonatypeUsername }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.sonatypePassword }}
