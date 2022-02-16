@@ -18,6 +18,8 @@
 package discord4j.connect.rabbitmq.shared;
 
 import discord4j.common.JacksonResources;
+import discord4j.common.store.Store;
+import discord4j.common.store.legacy.LegacyStoreLayout;
 import discord4j.connect.Constants;
 import discord4j.connect.common.ConnectGatewayOptions;
 import discord4j.connect.common.DownstreamGatewayClient;
@@ -96,7 +98,7 @@ public class ExampleRabbitLocalCacheWorker {
         RabbitMQSinkMapper sinkMapper = RabbitMQSinkMapper.createBinarySinkToDirect("gateway");
         RabbitMQSourceMapper sourceMapper = RabbitMQSourceMapper.createBinarySource();
 
-        GatewayDiscordClient client = DiscordClient.builder(System.getenv("token"))
+        GatewayDiscordClient client = DiscordClient.builder(System.getenv("BOT_TOKEN"))
                 .setJacksonResources(jackson)
                 .setGlobalRateLimiter(RSocketGlobalRateLimiter.createWithServerAddress(globalRouterServerAddress))
                 .setExtraOptions(o -> new RSocketRouterOptions(o, request -> globalRouterServerAddress))
@@ -104,9 +106,9 @@ public class ExampleRabbitLocalCacheWorker {
                 .gateway()
                 .setSharding(shardingStrategy)
                 // Set a fully capable entity cache as this worker is also performing save tasks
-                .setStoreService(RedisStoreService.builder()
+                .setStore(Store.fromLayout(LegacyStoreLayout.of(RedisStoreService.builder()
                         .redisClient(redisClient)
-                        .build())
+                        .build())))
                 // Turn this gateway into a RabbitMQ-based one
                 .setExtraOptions(o -> new ConnectGatewayOptions(o,
                         RabbitMQPayloadSink.create(sinkMapper, rabbitMQ),

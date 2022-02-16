@@ -18,6 +18,8 @@
 package discord4j.connect.rsocket.shared;
 
 import discord4j.common.JacksonResources;
+import discord4j.common.store.Store;
+import discord4j.common.store.legacy.LegacyStoreLayout;
 import discord4j.connect.Constants;
 import discord4j.connect.common.ConnectGatewayOptions;
 import discord4j.connect.common.DownstreamGatewayClient;
@@ -83,17 +85,17 @@ public class ExampleRSocketWorker {
         // RSocketPayloadSink: payloads workers send to leaders through the payload server
         // RSocketPayloadSource: payloads leaders send to workers through the payload server
         // we use DownstreamGatewayClient that is capable of using above components to work in a distributed way
-        GatewayDiscordClient client = DiscordClient.builder(System.getenv("token"))
+        GatewayDiscordClient client = DiscordClient.builder(System.getenv("BOT_TOKEN"))
                 .setJacksonResources(jackson)
-                .setGlobalRateLimiter(new RSocketGlobalRateLimiter(globalRouterServerAddress))
+                .setGlobalRateLimiter(RSocketGlobalRateLimiter.createWithServerAddress(globalRouterServerAddress))
                 .setExtraOptions(o -> new RSocketRouterOptions(o, request -> globalRouterServerAddress))
                 .build(RSocketRouter::new)
                 .gateway()
                 .setSharding(singleStrategy)
                 .setMemberRequestFilter(MemberRequestFilter.none())
-                .setStoreService(new ReadOnlyStoreService(RedisStoreService.builder()
+                .setStore(Store.fromLayout(LegacyStoreLayout.of(new ReadOnlyStoreService(RedisStoreService.builder()
                         .redisClient(redisClient)
-                        .build()))
+                        .build()))))
                 .setExtraOptions(o -> new ConnectGatewayOptions(o,
                         new RSocketPayloadSink(payloadServerAddress,
                                 new RSocketJacksonSinkMapper(jackson.getObjectMapper(), "outbound")),

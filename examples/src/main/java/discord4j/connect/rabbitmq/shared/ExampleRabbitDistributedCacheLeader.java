@@ -18,6 +18,8 @@
 package discord4j.connect.rabbitmq.shared;
 
 import discord4j.common.JacksonResources;
+import discord4j.common.store.Store;
+import discord4j.common.store.legacy.LegacyStoreLayout;
 import discord4j.connect.Constants;
 import discord4j.connect.common.ConnectGatewayOptions;
 import discord4j.connect.common.UpstreamGatewayClient;
@@ -34,8 +36,7 @@ import discord4j.connect.support.LogoutHttpServer;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.dispatch.DispatchEventMapper;
-import discord4j.core.object.presence.Presence;
-import discord4j.core.shard.InvalidationStrategy;
+import discord4j.core.object.presence.ClientPresence;
 import discord4j.core.shard.ShardingStrategy;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
@@ -106,28 +107,27 @@ public class ExampleRabbitDistributedCacheLeader {
         RabbitMQSinkMapper sink = RabbitMQSinkMapper.createBinarySinkToDirect("payload");
         RabbitMQSourceMapper source = RabbitMQSourceMapper.createBinarySource();
 
-        GatewayDiscordClient client = DiscordClient.builder(System.getenv("token"))
-                .setJacksonResources(jackson)
-                .setGlobalRateLimiter(RSocketGlobalRateLimiter.createWithServerAddress(globalRouterServerAddress))
-                .setExtraOptions(o -> new RSocketRouterOptions(o, request -> globalRouterServerAddress))
-                .build(RSocketRouter::new)
-                .gateway()
-                .setSharding(shardingStrategy)
-                // Properly coordinate IDENTIFY attempts across all shards
-                .setShardCoordinator(RSocketShardCoordinator.createWithServerAddress(coordinatorServerAddress))
-                .setDisabledIntents(IntentSet.of(
-                        Intent.GUILD_PRESENCES,
-                        Intent.GUILD_MESSAGE_TYPING,
-                        Intent.DIRECT_MESSAGE_TYPING))
-                .setInitialStatus(s -> Presence.invisible())
+        GatewayDiscordClient client = DiscordClient.builder(System.getenv("BOT_TOKEN"))
+            .setJacksonResources(jackson)
+            .setGlobalRateLimiter(RSocketGlobalRateLimiter.createWithServerAddress(globalRouterServerAddress))
+            .setExtraOptions(o -> new RSocketRouterOptions(o, request -> globalRouterServerAddress))
+            .build(RSocketRouter::new)
+            .gateway()
+            .setSharding(shardingStrategy)
+            // Properly coordinate IDENTIFY attempts across all shards
+            .setShardCoordinator(RSocketShardCoordinator.createWithServerAddress(coordinatorServerAddress))
+            .setDisabledIntents(IntentSet.of(
+                Intent.GUILD_PRESENCES,
+                Intent.GUILD_MESSAGE_TYPING,
+                Intent.DIRECT_MESSAGE_TYPING)).setInitialPresence(s -> ClientPresence.invisible())
                 // Disable invalidation strategy and event publishing to save memory usage
-                .setInvalidationStrategy(InvalidationStrategy.disable())
+                //.setInvalidationStrategy(InvalidationStrategy.disable())
                 .setDispatchEventMapper(DispatchEventMapper.discardEvents())
                 // Define the entity cache
-                .setStoreService(RedisStoreService.builder()
+                .setStore(Store.fromLayout(LegacyStoreLayout.of(RedisStoreService.builder()
                         .redisClient(redisClient)
                         .useSharedConnection(false)
-                        .build())
+                        .build())))
                 // Turn this gateway into a RabbitMQ-based one
                 .setExtraOptions(o -> new ConnectGatewayOptions(o,
                         RabbitMQPayloadSink.create(sink, rabbitMQ),
