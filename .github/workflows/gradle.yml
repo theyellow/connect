@@ -47,3 +47,5 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 8
+      - name: Do not publish, but tell "This is no PR"
+        run: echo "This is no PR"
