@@ -23,8 +23,8 @@ task customWorkerFatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': 'discord4j.connect.ExampleSingleWithConnection'
     }
-    archiveBaseName : {'ExampleSingleWithConnection'}
-    archiveVersion : '0.0.1'
+    archiveBaseName = 'ExampleSingleWithConnection'
+    archiveVersion = '0.0.1'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
@@ -33,8 +33,8 @@ task customLeaderFatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': 'discord4j.connect.ExampleSingleConnect'
     }
-    archiveBaseName : {'ExampleSingleConnect'}
-    archiveVersion : '0.0.1'
+    archiveBaseName = 'ExampleSingleConnect'
+    archiveVersion = '0.0.1'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
@@ -43,8 +43,8 @@ task customRSocketLeaderFatJar (type: Jar) {
     manifest {
         attributes 'Main-Class': 'discord4j.connect.rsocket.shared.ExampleRSocketLeader'
     }
-    archiveBaseName : 'ExampleRSocketLeader'
-    archiveVersion : '0.0.1'
+    archiveBaseName = 'ExampleRSocketLeader'
+    archiveVersion = '0.0.1'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
@@ -53,8 +53,8 @@ task customRSocketWorkerFatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': 'discord4j.connect.rsocket.shared.ExampleRSocketWorker'
     }
-    archiveBaseName : 'ExampleRSocketWorker'
-    archiveVersion : '0.0.1'
+    archiveBaseName = 'ExampleRSocketWorker'
+    archiveVersion = '0.0.1'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
