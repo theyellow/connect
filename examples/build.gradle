@@ -13,9 +13,9 @@ jar {
     manifest {
         attributes "Main-Class": "discord4j.connect.ExampleSingleWithConnection"
     }
-
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
@@ -25,7 +25,8 @@ task customWorkerFatJar(type: Jar) {
     }
     archiveBaseName = 'ExampleSingleWithConnection'
     archiveVersion = '0.0.1'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 
@@ -35,7 +36,8 @@ task customLeaderFatJar(type: Jar) {
     }
     archiveBaseName = 'ExampleSingleConnect'
     archiveVersion = '0.0.1'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 
@@ -43,9 +45,10 @@ task customRSocketLeaderFatJar (type: Jar) {
     manifest {
         attributes 'Main-Class': 'discord4j.connect.rsocket.shared.ExampleRSocketLeader'
     }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     archiveBaseName = 'ExampleRSocketLeader'
     archiveVersion = '0.0.1'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 
@@ -55,6 +58,7 @@ task customRSocketWorkerFatJar(type: Jar) {
     }
     archiveBaseName = 'ExampleRSocketWorker'
     archiveVersion = '0.0.1'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
