@@ -7,3 +7,54 @@ dependencies {
     implementation "com.discord4j:discord4j-core:$discord4j_core_version"
     implementation "com.discord4j:stores-redis:$stores_redis_version"
 }
+
+
+jar {
+    manifest {
+        attributes "Main-Class": "discord4j.connect.ExampleSingleWithConnection"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task customWorkerFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'discord4j.connect.ExampleSingleWithConnection'
+    }
+    archiveBaseName : {'ExampleSingleWithConnection'}
+    archiveVersion : '0.0.1'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task customLeaderFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'discord4j.connect.ExampleSingleConnect'
+    }
+    archiveBaseName : {'ExampleSingleConnect'}
+    archiveVersion : '0.0.1'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task customRSocketLeaderFatJar (type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'discord4j.connect.rsocket.shared.ExampleRSocketLeader'
+    }
+    archiveBaseName : 'ExampleRSocketLeader'
+    archiveVersion : '0.0.1'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task customRSocketWorkerFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'discord4j.connect.rsocket.shared.ExampleRSocketWorker'
+    }
+    archiveBaseName : 'ExampleRSocketWorker'
+    archiveVersion : '0.0.1'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
