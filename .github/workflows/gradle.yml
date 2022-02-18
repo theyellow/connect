@@ -48,7 +48,7 @@ jobs:
         with:
           java-version: 8
       - name: Publish with Gradle
-        run: ./gradlew -x test publish
+        run: echo "We don't publish, if this was no push to main-branch, this is a warning"
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.signingKey }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.signingPassword }}
