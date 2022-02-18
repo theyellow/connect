@@ -5,12 +5,9 @@ ENV TZ Europe/Berlin
 
 RUN apk -U --no-cache upgrade
 RUN mkdir /config
-COPY examples/build/libs/ExampleRSocketLeader-0.0.1.jar connectRSocketLeader.jar
-COPY examples/build/libs/ExampleRSocketWorker-0.0.1.jar connectRSocketWorker.jar
-COPY examples/build/libs/ExampleSingleConnect-0.0.1.jar singleConnect.jar
-COPY examples/build/libs/ExampleSingleWithConnection-0.0.1.jar singleWithConnection.jar
+COPY examples/build/libs/cr-connect-bot-0.0.1.jar cr-connect-bot.jar
 ENTRYPOINT ["java", \
 "-Xmx300m", \
 "-jar", \
-"/singleConnect.jar"]
+"/cr-connect-bot.jar"]
 EXPOSE 18081

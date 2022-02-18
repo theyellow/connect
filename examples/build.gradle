@@ -8,57 +8,14 @@ dependencies {
     implementation "com.discord4j:stores-redis:$stores_redis_version"
 }
 
-
-jar {
-    manifest {
-        attributes "Main-Class": "discord4j.connect.ExampleSingleWithConnection"
-    }
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    from {
-        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
 task customWorkerFatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': 'discord4j.connect.ExampleSingleWithConnection'
     }
-    archiveBaseName = 'ExampleSingleWithConnection'
+    archiveBaseName = 'cr-connect-bot'
     archiveVersion = '0.0.1'
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 
-task customLeaderFatJar(type: Jar) {
-    manifest {
-        attributes 'Main-Class': 'discord4j.connect.ExampleSingleConnect'
-    }
-    archiveBaseName = 'ExampleSingleConnect'
-    archiveVersion = '0.0.1'
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
-task customRSocketLeaderFatJar (type: Jar) {
-    manifest {
-        attributes 'Main-Class': 'discord4j.connect.rsocket.shared.ExampleRSocketLeader'
-    }
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    archiveBaseName = 'ExampleRSocketLeader'
-    archiveVersion = '0.0.1'
-    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
-task customRSocketWorkerFatJar(type: Jar) {
-    manifest {
-        attributes 'Main-Class': 'discord4j.connect.rsocket.shared.ExampleRSocketWorker'
-    }
-    archiveBaseName = 'ExampleRSocketWorker'
-    archiveVersion = '0.0.1'
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
