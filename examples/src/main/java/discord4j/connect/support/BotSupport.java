@@ -106,6 +106,10 @@ public class BotSupport {
                                         .blockOptional()
                                         .orElse(-1L)
                                         .toString(), false);
+                                spec.addField("Application-Info", event.getClient().getApplicationInfo()
+                                    .blockOptional()
+                                    .orElseThrow(RuntimeException::new)
+                                    .toString(), false);
                             })))
                     .then();
         }

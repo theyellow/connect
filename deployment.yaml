@@ -66,7 +66,7 @@ spec:
                        name: cr-connect-bot-secrets
                ports:
                    - containerPort: 8080
-               command: [ "java", "-Xmx300m", "-jar", "/cr-connect-bot.jar", "discord4j.connect.ExampleSingleConnect" ]
+               command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.ExampleSingleConnect" ]
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -97,7 +97,7 @@ spec:
                   name: cr-connect-bot-secrets
             ports:
               - containerPort: 8080
-            command: [ "java", "-Xmx300m", "-jar", "/cr-connect-bot.jar", "discord4j.connect.rsocket.shared.ExampleRSocketLeader" ]
+            command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.rsocket.shared.ExampleRSocketLeader" ]
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -128,7 +128,7 @@ spec:
                  name: cr-connect-bot-secrets
             ports:
               - containerPort: 8080
-            command: [ "java", "-Xmx300m", "-jar", "/cr-connect-bot.jar", "discord4j.connect.rsocket.shared.ExampleRSocketWorker" ]
+            command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.rsocket.shared.ExampleRSocketWorker" ]
 ---
 apiVersion: v1
 kind: Service
