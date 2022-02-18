@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ kubernetes-deployment, main ]
+    branches: [ kubernetes-deployment ]
   pull_request:
     branches: [ main ]
 
