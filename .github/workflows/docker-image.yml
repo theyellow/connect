@@ -19,7 +19,7 @@ jobs:
       with:
        java-version: '11'
        distribution: 'adopt'
-       cache: maven
+       cache: gradle
     - name: Build with gradle
       run: gradle build customWorkerFatJar
     - name: Build the Docker image
