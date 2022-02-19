@@ -1,0 +1,71 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: cr-connect-bot
+  labels:
+    name: cr-connect-bot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cr-connect-bot-worker-deployment
+  namespace: cr-connect-bot
+  labels:
+    app: cr-connect-bot-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cr-connect-bot
+  template:
+    metadata:
+      name: cr-connect-bot
+      namespace: cr-connect-bot
+      labels:
+        app: cr-connect-bot
+        department: bots
+    spec:
+      containers:
+        - name: cr-connect-worker-container
+          image: ghcr.io/theyellow/connect:master
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: cr-connect-bot-secrets
+          ports:
+            - containerPort: 8080
+          command: [ "java", "-Xmx300m", "-jar", "/cr-connect-bot.jar" ]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cr-connect-bot-leader-deployment
+    namespace: cr-connect-bot
+    labels:
+        app: cr-connect-bot-leader-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: cr-connect-bot-leader
+    template:
+        metadata:
+          name: cr-connect-bot-leader
+          namespace: cr-connect-bot
+          labels:
+             app: cr-connect-bot-leader
+             department: bots
+        spec:
+           containers:
+            -  name: cr-connect-leader-container
+               image: ghcr.io/theyellow/connect:master
+               imagePullPolicy: Always
+               envFrom:
+                   - secretRef:
+                       name: cr-connect-bot-secrets
+               ports:
+                   - containerPort: 8080
+               command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.ExampleSingleConnect" ]
+---
+

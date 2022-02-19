@@ -1,0 +1,99 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: cr-connect-bot
+  labels:
+    name: cr-connect-bot
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: cr-connect-rsocket-router
+    namespace: cr-connect-bot
+spec:
+    selector:
+        app: cr-connect-rsocket-middleware
+        department: bots
+    type: NodePort
+    ports:
+        - port: 33331
+          nodePort: 31321
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: cr-connect-rsocket-payload-server
+    namespace: cr-connect-bot
+spec:
+    selector:
+        app: cr-connect-rsocket-middleware
+        department: bots
+    type: NodePort
+    ports:
+        - port: 33333
+          nodePort: 31323
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: cr-connect-rsocket-shard-coordinator
+    namespace: cr-connect-bot
+spec:
+    selector:
+        app: cr-connect-rsocket-middleware
+        department: bots
+    type: NodePort
+    ports:
+        - port: 33332
+          nodePort: 31322
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cr-connect-rsocket-middleware-deployment
+    namespace: cr-connect-bot
+    labels:
+        app: cr-connect-rsocket-middleware-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: cr-connect-rsocket-middleware
+    template:
+        metadata:
+            name: cr-connect-rsocket-middleware
+            namespace: cr-connect-bot
+            labels:
+                app: cr-connect-rsocket-middleware
+                department: bots
+        spec:
+            containers:
+                - name: cr-connect-rsocket-global-router-container
+                  image: ghcr.io/theyellow/connect:master
+                  imagePullPolicy: Always
+                  envFrom:
+                      - secretRef:
+                            name: cr-connect-bot-secrets
+                  ports:
+                      - containerPort: 8080
+                  command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.rsocket.shared.servers.ExampleRSocketGlobalRouterServer" ]
+                - name: cr-connect-rsocket-payload-server-container
+                  image: ghcr.io/theyellow/connect:master
+                  imagePullPolicy: Always
+                  envFrom:
+                      - secretRef:
+                            name: cr-connect-bot-secrets
+                  ports:
+                      - containerPort: 8080
+                  command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.rsocket.shared.servers.ExampleRSocketPayloadServer" ]
+                - name: cr-connect-rsocket-shard-coordinator-container
+                  image: ghcr.io/theyellow/connect:master
+                  imagePullPolicy: Always
+                  envFrom:
+                      - secretRef:
+                            name: cr-connect-bot-secrets
+                  ports:
+                      - containerPort: 8080
+                  command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.rsocket.shared.servers.ExampleRSocketShardCoordinatorServer" ]
+---
