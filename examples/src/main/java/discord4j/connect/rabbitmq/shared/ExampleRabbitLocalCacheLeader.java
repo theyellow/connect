@@ -70,7 +70,7 @@ public class ExampleRabbitLocalCacheLeader {
          *
          * We will use RSocket GRS in this example: see ExampleRSocketGlobalRouterServer
          */
-        InetSocketAddress globalRouterServerAddress = new InetSocketAddress(Constants.GLOBAL_ROUTER_SERVER_PORT);
+        InetSocketAddress globalRouterServerAddress = new InetSocketAddress(Constants.GLOBAL_ROUTER_SERVER_HOST, Constants.GLOBAL_ROUTER_SERVER_PORT);
 
         /*
          * Define the location of the Shard Coordinator Server (SCS). An SCS establishes predictable ordering across
@@ -78,7 +78,7 @@ public class ExampleRabbitLocalCacheLeader {
          *
          * We will use RSocket SCS in this example: see ExampleRSocket
          */
-        InetSocketAddress coordinatorServerAddress = new InetSocketAddress(Constants.SHARD_COORDINATOR_SERVER_PORT);
+        InetSocketAddress coordinatorServerAddress = new InetSocketAddress(Constants.SHARD_COORDINATOR_SERVER_HOST, Constants.SHARD_COORDINATOR_SERVER_PORT);
 
         /*
          * Create a default factory for working with Jackson, this can be reused across the application.

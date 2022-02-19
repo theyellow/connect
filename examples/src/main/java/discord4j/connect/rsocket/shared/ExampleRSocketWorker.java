@@ -59,10 +59,10 @@ public class ExampleRSocketWorker {
 
     public static void main(String[] args) {
 
-        // define the port where the global router is listening to
-        // define the port where the payload server is listening to
-        InetSocketAddress globalRouterServerAddress = new InetSocketAddress(Constants.GLOBAL_ROUTER_SERVER_PORT);
-        InetSocketAddress payloadServerAddress = new InetSocketAddress(Constants.PAYLOAD_SERVER_PORT);
+        // define the host and port where the global router is listening to
+        // define the host and port where the payload server is listening to
+        InetSocketAddress globalRouterServerAddress = new InetSocketAddress(Constants.GLOBAL_ROUTER_SERVER_HOST, Constants.GLOBAL_ROUTER_SERVER_PORT);
+        InetSocketAddress payloadServerAddress = new InetSocketAddress(Constants.PAYLOAD_SERVER_HOST, Constants.PAYLOAD_SERVER_PORT);
 
         // use a common jackson factory to reuse it where possible
         JacksonResources jackson = JacksonResources.create();

@@ -69,7 +69,7 @@ public class ExampleRabbitDistributedCacheWorker {
          *
          * We will use RSocket GRS in this example: see ExampleRSocketGlobalRouterServer
          */
-        InetSocketAddress globalRouterServerAddress = new InetSocketAddress(Constants.GLOBAL_ROUTER_SERVER_PORT);
+        InetSocketAddress globalRouterServerAddress = new InetSocketAddress(Constants.GLOBAL_ROUTER_SERVER_HOST, Constants.GLOBAL_ROUTER_SERVER_PORT);
 
         /*
          * Define the redis server that will be used as entity cache.
