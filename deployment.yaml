@@ -133,11 +133,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cr-connect-bot-service
+  name: cr-connect-bot-redis
   namespace: cr-connect-bot
 spec:
   selector:
-    app: cr-connect-bot
+    app: cr-connect-redis
     department: bots
   type: NodePort
   ports:
@@ -159,6 +159,9 @@ kind: Pod
 metadata:
   name: redis-connect
   namespace: cr-connect-bot
+  labels:
+      app: cr-connect-redis
+      department: bots
 spec:
   containers:
     - name: redis-connect

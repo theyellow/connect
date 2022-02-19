@@ -23,7 +23,8 @@ public final class Constants {
     public static int GLOBAL_ROUTER_SERVER_PORT = 33331;
     public static int SHARD_COORDINATOR_SERVER_PORT = 33332;
     public static int PAYLOAD_SERVER_PORT = 33333;
-    public static String REDIS_CLIENT_URI = "redis://localhost:6379";
+    public static String CLIENT_URI = System.getenv("REDIS_CLIENT_URI");
+    public static String REDIS_CLIENT_URI = (null == CLIENT_URI || CLIENT_URI.isEmpty()) ? "redis://localhost:6379" : CLIENT_URI;
 
     private Constants() {
     }
