@@ -129,6 +129,7 @@ public class ExampleRabbitDistributedCacheLeader {
                 Intent.DIRECT_MESSAGE_TYPING)).setInitialPresence(s -> ClientPresence.invisible())
                 // Disable invalidation strategy and event publishing to save memory usage
                 //.setInvalidationStrategy(InvalidationStrategy.disable())
+                .setEnabledIntents(IntentSet.all())
                 .setDispatchEventMapper(DispatchEventMapper.discardEvents())
                 // Define the entity cache
                 .setStore(Store.fromLayout(LegacyStoreLayout.of(RedisStoreService.builder()

@@ -39,6 +39,8 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.dispatch.DispatchEventMapper;
 import discord4j.core.object.presence.ClientPresence;
 import discord4j.core.shard.ShardingStrategy;
+import discord4j.gateway.intent.Intent;
+import discord4j.gateway.intent.IntentSet;
 import discord4j.store.api.noop.NoOpStoreService;
 import reactor.core.publisher.Mono;
 import reactor.rabbitmq.QueueSpecification;
@@ -118,21 +120,22 @@ public class ExampleRabbitLocalCacheLeader {
             .setSharding(shardingStrategy)
             // Properly coordinate IDENTIFY attempts across all shards
             .setShardCoordinator(RSocketShardCoordinator.createWithServerAddress(coordinatorServerAddress)).setInitialPresence(s -> ClientPresence.invisible())
-                // Disable invalidation strategy, event publishing and entity cache to save memory usage
-                .setDispatchEventMapper(DispatchEventMapper.discardEvents())
-                .setStore(Store.fromLayout(LegacyStoreLayout.of(new NoOpStoreService())))
+            // Disable invalidation strategy, event publishing and entity cache to save memory usage
+            .setDispatchEventMapper(DispatchEventMapper.discardEvents())
+            .setStore(Store.fromLayout(LegacyStoreLayout.of(new NoOpStoreService())))
 //                .setInvalidationStrategy(InvalidationStrategy.disable())
-                // Turn this gateway into a RabbitMQ-based one
-                .setExtraOptions(o -> new ConnectGatewayOptions(o,
-                        RabbitMQPayloadSink.create(sink, rabbitMQ)
-                                .withBeforeSendFunction((rmq, meta) -> rmq.getSender()
-                                        .declare(QueueSpecification.queue(meta.getRoutingKey()))
-                                        .onErrorResume(t -> Mono.empty())),
-                        RabbitMQPayloadSource.create(source, rabbitMQ, "gateway")))
-                // UpstreamGatewayClient connects to Discord Gateway and forwards payloads to other nodes
-                .login(UpstreamGatewayClient::new)
-                .blockOptional()
-                .orElseThrow(RuntimeException::new);
+            .setEnabledIntents(IntentSet.all())
+            // Turn this gateway into a RabbitMQ-based one
+            .setExtraOptions(o -> new ConnectGatewayOptions(o,
+                    RabbitMQPayloadSink.create(sink, rabbitMQ)
+                            .withBeforeSendFunction((rmq, meta) -> rmq.getSender()
+                                    .declare(QueueSpecification.queue(meta.getRoutingKey()))
+                                    .onErrorResume(t -> Mono.empty())),
+                    RabbitMQPayloadSource.create(source, rabbitMQ, "gateway")))
+            // UpstreamGatewayClient connects to Discord Gateway and forwards payloads to other nodes
+            .login(UpstreamGatewayClient::new)
+            .blockOptional()
+            .orElseThrow(RuntimeException::new);
 
         LogoutHttpServer.startAsync(client);
         client.onDisconnect().block();

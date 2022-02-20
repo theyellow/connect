@@ -9,25 +9,25 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: cr-connect-rabbitmq-leader-deployment
+    name: cr-connect-rabbitmq-distributed-leader-deployment
     namespace: cr-connect-bot
     labels:
-        app: cr-connect-rabbitmq-leader-deployment
+        app: cr-connect-rabbitmq-distributed-leader-deployment
 spec:
     replicas: 1
     selector:
       matchLabels:
-         app: cr-connect-rabbitmq-leader
+         app: cr-connect-rabbitmq-distributed-leader
     template:
       metadata:
-         name: cr-connect-rabbitmq-leader
+         name: cr-connect-rabbitmq-distributed-leader
          namespace: cr-connect-bot
          labels:
-            app: cr-connect-rabbitmq-leader
+            app: cr-connect-rabbitmq-distributed-leader
             department: bots
       spec:
         containers:
-          - name: cr-connect-rabbitmq-leader-container
+          - name: cr-connect-rabbitmq-distributed-leader-container
             image: ghcr.io/theyellow/connect:master
             imagePullPolicy: Always
             envFrom:
@@ -40,25 +40,25 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: cr-connect-rabbitmq-worker-deployment
+    name: cr-connect-rabbitmq-distributed-worker-deployment
     namespace: cr-connect-bot
     labels:
-        app: cr-connect-rabbitmq-worker-deployment
+        app: cr-connect-rabbitmq-distributed-worker-deployment
 spec:
     replicas: 1
     selector:
       matchLabels:
-         app: cr-connect-rabbitmq-worker
+         app: cr-connect-rabbitmq-distributed-worker
     template:
       metadata:
-         name: cr-connect-rabbitmq-worker
+         name: cr-connect-rabbitmq-distributed-worker
          namespace: cr-connect-bot
          labels:
-           app: cr-connect-rabbitmq-worker
+           app: cr-connect-rabbitmq-distributed-worker
            department: bots
       spec:
         containers:
-          - name: cr-connect-rabbitmq-worker-container
+          - name: cr-connect-rabbitmq-distributed-worker-container
             image: ghcr.io/theyellow/connect:master
             imagePullPolicy: Always
             envFrom:
