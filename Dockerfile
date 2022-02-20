@@ -7,4 +7,5 @@ RUN apk -U --no-cache upgrade
 RUN mkdir /config
 COPY examples/build/libs/cr-connect-bot-0.0.1.jar cr-connect-bot.jar
 COPY examples/src/main/kubernetes/startLocalLeaderAndWorker.sh start.sh
+RUN ["chmod", "+x", "/start.sh"]
 CMD ./start.sh

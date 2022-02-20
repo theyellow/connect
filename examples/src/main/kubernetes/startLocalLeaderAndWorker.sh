@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Start local leader
 java -cp cr-connect-bot.jar discord4j.connect.ExampleSingleConnect &
