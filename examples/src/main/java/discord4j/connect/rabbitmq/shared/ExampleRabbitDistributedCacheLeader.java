@@ -24,6 +24,7 @@ import discord4j.connect.Constants;
 import discord4j.connect.common.ConnectGatewayOptions;
 import discord4j.connect.common.UpstreamGatewayClient;
 import discord4j.connect.rabbitmq.ConnectRabbitMQ;
+import discord4j.connect.rabbitmq.ConnectRabbitMQSettings;
 import discord4j.connect.rabbitmq.gateway.RabbitMQPayloadSink;
 import discord4j.connect.rabbitmq.gateway.RabbitMQPayloadSource;
 import discord4j.connect.rabbitmq.gateway.RabbitMQSinkMapper;
@@ -103,7 +104,13 @@ public class ExampleRabbitDistributedCacheLeader {
          * - RabbitMQSourceMapper will be used to CONSUME payloads from other nodes
          *      - "createBinarySource" will read binary messages
          */
-        ConnectRabbitMQ rabbitMQ = ConnectRabbitMQ.createDefault();
+        ConnectRabbitMQ rabbitMQ;
+        if (!Constants.RABBITMQ_HOST.isEmpty()) {
+            ConnectRabbitMQSettings settings = ConnectRabbitMQSettings.create().withAddress(Constants.RABBITMQ_HOST, Constants.RABBITMQ_PORT);
+            rabbitMQ = ConnectRabbitMQ.createFromSettings(settings);
+        } else {
+            rabbitMQ = ConnectRabbitMQ.createDefault();
+        }
         RabbitMQSinkMapper sink = RabbitMQSinkMapper.createBinarySinkToDirect("payload");
         RabbitMQSourceMapper source = RabbitMQSourceMapper.createBinarySource();
 

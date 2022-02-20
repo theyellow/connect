@@ -22,7 +22,24 @@ import java.net.UnknownHostException;
 
 public final class Constants {
 
-    // RSocket variables
+
+    // rabbitmq variables
+    private static final String RABBITMQ_HOST_INTERNAL = System.getenv("RABBITMQ_HOST");
+    public static final String RABBITMQ_HOST = (null == RABBITMQ_HOST_INTERNAL || RABBITMQ_HOST_INTERNAL.isEmpty()) ? "": RABBITMQ_HOST_INTERNAL;
+    // internal default in rabbitmq : -1
+    public static final String RABBITMQ_PORT_INTERNAL = System.getenv("RABBITMQ_PORT");
+    public static int RABBITMQ_PORT;
+    static {
+        try {
+            RABBITMQ_PORT = (null == RABBITMQ_PORT_INTERNAL || RABBITMQ_PORT_INTERNAL.isEmpty()) ? -1 : Integer.valueOf(RABBITMQ_PORT_INTERNAL);
+        } catch (NumberFormatException e) {
+            RABBITMQ_PORT = -1;
+        }
+    }
+
+    ;
+
+    // rsocket variables
     private static String LOCALHOST;
     static {
         try {
@@ -42,7 +59,7 @@ public final class Constants {
     public static int SHARD_COORDINATOR_SERVER_PORT = 33332;
     public static int PAYLOAD_SERVER_PORT = 33333;
 
-    // Redis variables
+    // redis variables
     private static final String CLIENT_URI = System.getenv("REDIS_CLIENT_URI");
     public static String REDIS_CLIENT_URI = (null == CLIENT_URI || CLIENT_URI.isEmpty()) ? "redis://localhost:6379" : CLIENT_URI;
 

@@ -1,0 +1,66 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: cr-connect-bot
+  labels:
+    name: cr-connect-bot
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: cr-connect-rabbitmq-broker-port-1
+    namespace: cr-connect-bot
+spec:
+    selector:
+        app: cr-connect-rabbitmq-broker
+        department: bots
+    type: NodePort
+    ports:
+        - port: 5672
+          nodePort: 31672
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: cr-connect-rabbitmq-broker-port-2
+    namespace: cr-connect-bot
+spec:
+    selector:
+        app: cr-connect-rabbitmq-broker
+        department: bots
+    type: NodePort
+    ports:
+        - port: 15672
+          nodePort: 31673
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cr-connect-rabbitmq-broker-deployment
+    namespace: cr-connect-bot
+    labels:
+        app: cr-connect-rabbitmq-broker-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: cr-connect-rabbitmq-broker
+    template:
+        metadata:
+            name: cr-connect-rabbitmq-broker
+            namespace: cr-connect-bot
+            labels:
+                app: cr-connect-rabbitmq-broker
+                department: bots
+        spec:
+            containers:
+                - name: cr-connect-rsocket-global-router-container
+                  image: rabbitmq:3.9-management
+                  envFrom:
+                      - secretRef:
+                            name: cr-connect-bot-secrets
+                  ports:
+                      - containerPort: 5672
+                      - containerPort: 15672
+---
