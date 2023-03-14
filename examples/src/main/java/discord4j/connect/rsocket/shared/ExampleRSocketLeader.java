@@ -36,6 +36,7 @@ import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.dispatch.DispatchEventMapper;
 import discord4j.core.shard.ShardingStrategy;
+import discord4j.store.jdk.JdkStoreService;
 import discord4j.store.redis.RedisStoreService;
 import io.lettuce.core.RedisClient;
 import reactor.util.Logger;
@@ -126,10 +127,34 @@ public class ExampleRSocketLeader {
                 .orElseThrow(RuntimeException::new);
 
         // Proof of concept allowing leader management via API
-        LogoutHttpServer.startAsync(client);
+        
+/** code on 0.7.x-additionals
+ *       HttpServer.create()
+ *               .port(0) // use an ephemeral port
+ *               .route(routes -> routes
+ *                       .get("/logout",
+ *                               (req, res) -> client.logout()
+ *                                       .then(Mono.from(res.addHeader("content-type", "application/json")
+ *                                               .status(200)
+ *                                               .chunkedTransfer(false)
+ *                                               .sendString(Mono.just("OK")))))
+ *               )
+ *               .bind()
+ *               .doOnNext(facade -> {
+ *                   log.info("*************************************************************");
+ *                   log.info("Server started at {}:{}", facade.host(), facade.port());
+ *                   log.info("*************************************************************");
+ *                   // kill the server on JVM exit
+ *                   Runtime.getRuntime().addShutdownHook(new Thread(() -> facade.disposeNow()));
+ *               })
+ *               .subscribe();
+ */
+        
+  // code on connect/master 
+  LogoutHttpServer.startAsync(client);
 
-        client.onDisconnect().block();
-    }
+  client.onDisconnect().block();
+}
 
     private static final Logger log = Loggers.getLogger(ExampleRSocketLeader.class);
 }

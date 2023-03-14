@@ -22,7 +22,6 @@ import java.net.UnknownHostException;
 
 public final class Constants {
 
-
     // TODO: use env variables?
     // also better for kubernetes
 

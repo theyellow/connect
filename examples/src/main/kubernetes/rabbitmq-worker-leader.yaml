@@ -1,0 +1,70 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: cr-connect-bot
+  labels:
+    name: cr-connect-bot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cr-connect-rabbitmq-leader-deployment
+    namespace: cr-connect-bot
+    labels:
+        app: cr-connect-rabbitmq-leader-deployment
+spec:
+    replicas: 1
+    selector:
+      matchLabels:
+         app: cr-connect-rabbitmq-leader
+    template:
+      metadata:
+         name: cr-connect-rabbitmq-leader
+         namespace: cr-connect-bot
+         labels:
+            app: cr-connect-rabbitmq-leader
+            department: bots
+      spec:
+        containers:
+          - name: cr-connect-rabbitmq-leader-container
+            image: ghcr.io/theyellow/connect:master
+            imagePullPolicy: Always
+            envFrom:
+              - secretRef:
+                  name: cr-connect-bot-secrets
+            ports:
+              - containerPort: 8080
+            command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.rabbitmq.shared.ExampleRabbitLocalCacheLeader" ]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cr-connect-rabbitmq-worker-deployment
+    namespace: cr-connect-bot
+    labels:
+        app: cr-connect-rabbitmq-worker-deployment
+spec:
+    replicas: 1
+    selector:
+      matchLabels:
+         app: cr-connect-rabbitmq-worker
+    template:
+      metadata:
+         name: cr-connect-rabbitmq-worker
+         namespace: cr-connect-bot
+         labels:
+           app: cr-connect-rabbitmq-worker
+           department: bots
+      spec:
+        containers:
+          - name: cr-connect-rabbitmq-worker-container
+            image: ghcr.io/theyellow/connect:master
+            imagePullPolicy: Always
+            envFrom:
+             - secretRef:
+                 name: cr-connect-bot-secrets
+            ports:
+              - containerPort: 8080
+            command: [ "java", "-Xmx300m", "-cp", "/cr-connect-bot.jar", "discord4j.connect.rabbitmq.shared.ExampleRabbitLocalCacheWorker" ]
+---

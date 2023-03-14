@@ -2,7 +2,20 @@ dependencies {
     api project(':rsocket')
     api project(':rabbitmq')
 
+    implementation "com.rabbitmq:amqp-client:$amqp_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
     implementation "com.discord4j:discord4j-core:$discord4j_core_version"
     implementation "com.discord4j:stores-redis:$stores_redis_version"
 }
+
+task customWorkerFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'discord4j.connect.ExampleSingleWithConnection'
+    }
+    archiveBaseName = 'cr-connect-bot'
+    archiveVersion = '0.0.1'
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
